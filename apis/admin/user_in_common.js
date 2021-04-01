@@ -22,11 +22,11 @@ function get_users_in_common(req, commonId){
 		'SELECT u.id, u.firstName, u.lastName, u.email, u.type, ' +
 		`(${get_wealth} u.id AND CommonId = ?) AS wealth, ` +
 		`(${get_cows} u.id AND CommonId = ?) AS cows ` +
-		'FROM UserCommons AS uc JOIN Users AS u ON u.id = uc.UserId  WHERE uc.CommonId = ? ' +
-		'LIMIT ?, ?',
+		'FROM UserCommons AS uc JOIN Users AS u ON u.id = uc.UserId  WHERE uc.CommonId = ? ' /* +
+		'LIMIT ?, ?' */,
 		{
 			replacements: [
-				commonId,commonId,commonId, ...paging_raw(req)
+				commonId,commonId,commonId /*, ...paging_raw(req) */
 			],
 			type: QueryTypes.SELECT
 		}).then((dbRes)=>{
