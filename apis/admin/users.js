@@ -19,11 +19,11 @@ function get_users(req) {
     'SELECT id, firstName, lastName, email, type, ' +
     `(${get_wealth} id) AS wealth, ` +
     `(${get_cows} id) AS cows ` +
-    'FROM Users LIMIT ?, ?',
+    'FROM Users' /* ' LIMIT ?, ?' */,
     {
-      replacements: [
+      /* replacements: [
           ...paging_raw(req)
-      ],
+      ], */
       type: QueryTypes.SELECT
     }).then((dbRes)=>{
       return dbRes;
