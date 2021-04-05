@@ -23,6 +23,7 @@ async function get_conf_id_2(cid){
         }
       })
 }
+//changed maxcowperperson to 10
 async function create_common(name, user_id,cow_price, milk_price,start_date, end_date) {
     let common = db.Commons.build({
         admin_uid: user_id,
@@ -34,7 +35,7 @@ async function create_common(name, user_id,cow_price, milk_price,start_date, end
         cowPrice: cow_price,
         startDate: start_date,
         endDate: end_date,
-        maxCowPerPerson: 1000,
+        maxCowPerPerson: 10,
         degradeRate: 15,
         CommonId: common.id
     });
@@ -92,11 +93,12 @@ async function milk_test(cid, uid) {
 
 
 async function get_avg_cow_health(cid){
-	result = await db.sequelize.query(
+	let result = await db.sequelize.query(
 		'SELECT AVG(c.health) ' +
 		`FROM Cows AS c `+
-		'WHERE c.CommonId = ' + cid,
+		'WHERE c.CommonId = ?',
 		{
+            replacements:[cid],
 			type: QueryTypes.SELECT
 		}).then((dbRes) => {
 			var key = Object.keys(dbRes[0]);
@@ -111,10 +113,23 @@ async function get_avg_cow_health(cid){
 	return result;
 }
 
+async function get_common_health(cid) {
+    let result = await db.sequelize.query(
+        'SELECT health, updatedAt FROM CommonsHealths WHERE CommonId = ?',
+        {
+            replacements: [cid],
+            type: QueryTypes.SELECT
+        }).then((dbRes) => {
+        return dbRes;
+    });
+    return result;
+}
+
 module.exports = {
     create_common,
     get_commons,
     get_common_info,
     milk_test,
-    get_avg_cow_health
+    get_avg_cow_health,
+    get_common_health
 }
